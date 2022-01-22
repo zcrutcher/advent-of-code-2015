@@ -25,13 +25,12 @@ defmodule Day1 do
         IO.inspect(answer)
     end
 
-    def question2([head | tail], {floor, count}) when floor > -1 do
-        case head do
-            "(" ->
-                question2(tail, {floor + 1, count + 1})
-            ")" ->
-                question2(tail, {floor - 1, count + 1})
-        end
+    def question2(["(" | tail], {floor, count}) when floor > -1 do
+        question2(tail, {floor + 1, count + 1})
+    end
+
+    def question2([")" | tail], {floor, count}) when floor > -1 do
+        question2(tail, {floor - 1, count + 1})
     end
 
     def question2(_tail, {-1, x}) do
@@ -39,8 +38,10 @@ defmodule Day1 do
     end
 
     def answer2 do
-        answer = Day1.input
-        |> question2({0,0})
+        answer = 
+        Day1.input
+        |>
+        Day1.question2({0,0})
         IO.puts("Question 2:")
         IO.inspect(answer)
     end
