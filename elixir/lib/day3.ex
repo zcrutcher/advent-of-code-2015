@@ -109,7 +109,7 @@ defmodule Day3 do
 
     def answer2 do
         input = Day3.input
-        question2([[0,0]], input, 1, {0,0}, {0,0})
+        question2([[0,0]], input, @santa, {0,0}, {0,0})
     end
 
 end
