@@ -9,9 +9,8 @@ defmodule Day5 do
         |> String.split("\n", trim: true)
     end
 
-    def double_check([h | t], prev, false) do
-
-        case h == prev do
+    def double_check([h | t], prev, repeated) do
+        case h == prev || repeated do
             true ->
                 double_check(t, h, true)
             false ->
@@ -19,16 +18,13 @@ defmodule Day5 do
         end
     end
 
-    def double_check([h | t], prev, true) do
-        true
-    end
-
-    def double_check([], prev, true) do
-        true
-    end
-
-    def double_check([], prev, false) do
-        false
+    def double_check([], prev, repeated) do
+        case repeated do
+            true ->
+                repeated
+            false ->
+                repeated
+        end
     end
 
     def bad_character?(string) do
@@ -48,7 +44,15 @@ defmodule Day5 do
         count
     end
 
-    def question1([h | t], count, double, bad, answer_count) do
+    def good?(vowel_count, repeated, bad) do
+        if vowel_count > 2 && repeated == true && bad == false do
+            true    
+        else
+            false
+        end 
+    end
+
+    def question1([h | t], count, repeated, bad, answer_count) do
         
         split_input =
         String.split(h, "", trim: true)
@@ -56,23 +60,23 @@ defmodule Day5 do
         vowel_count = 
         vowel_check(split_input, count)
 
-        [x | y] = split_input
-        double =
-        double_check(y, x, double)
+        [head | tail] = split_input
+        repeated =
+        double_check(tail, head, repeated)
 
         bad =
         bad_character?(h)
 
-        if vowel_count > 2 && double == true && bad == false do
-            question1(t, 0, false, false, answer_count + 1)
-        else
-            question1(t, 0, false, false, answer_count)
-        end
-        
-        
+        good?(vowel_count, repeated, bad)
+        |> case do
+            true ->
+                question1(t, 0, false, false, answer_count + 1)
+            false ->
+                question1(t, 0, false, false, answer_count)
+        end 
     end
 
-    def question1([], count, double, bad, answer_count) do
+    def question1([], count, repeated, bad, answer_count) do
         answer_count
     end
 
