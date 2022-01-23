@@ -1,5 +1,8 @@
 defmodule Day3 do
 
+    @santa 1
+    @robo_santa 2
+
     def input do
         alias Input
         Input.main("../input/day3.txt")
@@ -42,7 +45,7 @@ defmodule Day3 do
         end
     end
 
-    def question1([], visitied, {x,y}) do
+    def question1([], visitied, {_x, _y}) do
         Enum.count(visitied)
     end
 
@@ -51,90 +54,62 @@ defmodule Day3 do
         question1(input, [[0,0]], {0,0})
     end
 
-
-    # Santa = 1
-    # Robo Santa = 2
-    # Remove the santa/robo from the tuple
-    def question2([">" | tail], visited, 1, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x1 + 1, y1]) do
+    def add_new_coordinate(visited, x, y) do
+        case Enum.member?(visited, [x, y]) do
             false ->
-                question2(tail, [[x1 + 1, y1] | visited], 2,{x1 + 1, y1}, {x2, y2})
+                [[x,y] | visited]
             true ->
-                question2(tail, visited, 2, {x1 + 1, y1}, {x2, y2})
+                visited
         end
     end
-
-    def question2([">" | tail], visited, 2, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x2 + 1, y2]) do
-            false ->
-                question2(tail, [[x2 + 1, y2] | visited], 1,{x1, y1}, {x2 + 1, y2})
-            true ->
-                question2(tail, visited, 1, {x1, y1}, {x2 + 1, y2})
-        end
+    
+    def question2(visited, [">" | tail], @santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x1 + 1, y1)
+        |> question2(tail, @robo_santa, {x1 + 1, y1}, {x2, y2})
     end
 
-
-    def question2(["<" | tail], visited, 1, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x1 - 1, y1]) do
-            false ->
-                question2(tail, [[x1 - 1, y1] | visited], 2,{x1 - 1, y1}, {x2, y2})
-            true ->
-                question2(tail, visited, 2, {x1 - 1, y1}, {x2, y2})
-        end
+    def question2(visited, [">" | tail], @robo_santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x2 + 1, y2)
+        |> question2(tail, @santa, {x1, y1}, {x2 + 1, y2})
     end
 
-    def question2(["<" | tail], visited, 2, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x2 - 1, y2]) do
-            false ->
-                question2(tail, [[x2 - 1, y2] | visited], 1,{x1, y1}, {x2 - 1, y2})
-            true ->
-                question2(tail, visited, 1, {x1, y1}, {x2 - 1, y2})
-        end
+    def question2(visited, ["<" | tail], @santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x1 - 1, y1)
+        |> question2(tail, @robo_santa, {x1 - 1, y1}, {x2, y2})
     end
 
-    def question2(["^" | tail], visited, 1, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x1, y1 + 1]) do
-            false ->
-                question2(tail, [[x1, y1 + 1] | visited], 2,{x1, y1 + 1}, {x2, y2})
-            true ->
-                question2(tail, visited, 2, {x1, y1 + 1}, {x2, y2})
-        end
+    def question2(visited, ["<" | tail], @robo_santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x2 - 1, y2)
+        |> question2(tail, @santa, {x1, y1}, {x2 - 1, y2})
     end
 
-    def question2(["^" | tail], visited, 2, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x2, y2 + 1]) do
-            false ->
-                question2(tail, [[x2, y2 + 1] | visited], 1,{x1, y1}, {x2, y2 + 1})
-            true ->
-                question2(tail, visited, 1, {x1, y1}, {x2, y2 + 1})
-        end
+    def question2(visited, ["^" | tail], @santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x1, y1 + 1)
+        |> question2(tail, @robo_santa, {x1, y1 + 1}, {x2, y2})
     end
 
-    def question2(["v" | tail], visited, 1, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x1, y1 - 1]) do
-            false ->
-                question2(tail, [[x1, y1 - 1] | visited], 2,{x1, y1 - 1}, {x2, y2})
-            true ->
-                question2(tail, visited, 2, {x1, y1 - 1}, {x2, y2})
-        end
+    def question2(visited, ["^" | tail], @robo_santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x2, y2 + 1)
+        |> question2(tail, @santa, {x1, y1}, {x2, y2 + 1})
     end
 
-    def question2(["v" | tail], visited, 2, {x1, y1}, {x2, y2}) do
-        case Enum.member?(visited, [x2, y2 - 1]) do
-            false ->
-                question2(tail, [[x2, y2 - 1] | visited], 1,{x1, y1}, {x2, y2 - 1})
-            true ->
-                question2(tail, visited, 1, {x1, y1}, {x2, y2 - 1})
-        end
+    def question2(visited, ["v" | tail], @santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x1, y1 - 1)
+        |> question2(tail, @robo_santa, {x1, y1 - 1}, {x2, y2})
     end
 
-    def question2([], visited, x, {x1, y1}, {x2, y2}) do
+    def question2(visited, ["v" | tail], @robo_santa, {x1, y1}, {x2, y2}) do
+        add_new_coordinate(visited, x2, y2 - 1)
+        |> question2(tail, @santa, {x1, y1}, {x2, y2 - 1})
+    end
+
+    def question2(visited, [], _x, {_x1, _y1}, {_x2, _y2}) do
         Enum.count(visited)
     end
 
     def answer2 do
         input = Day3.input
-        question2(input, [[0,0]], 1, {0,0}, {0,0})
+        question2([[0,0]], input, 1, {0,0}, {0,0})
     end
 
 end
