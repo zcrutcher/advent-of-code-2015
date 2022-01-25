@@ -9,55 +9,39 @@ defmodule Day3 do
         |> String.split("", trim: true)
     end
 
-    def question1([">" | tail], visited, {x, y}) do
-        case Enum.member?(visited, [x + 1, y]) do
-            false ->
-                question1(tail, [[x + 1, y] | visited], { x + 1, y })
-            true ->
-                question1(tail, visited, { x + 1, y })
-        end
+    def question1(visited, [">" | tail], {x, y}) do
+        add_new_coordinate(visited, x + 1, y)
+        |> question1(tail, {x + 1, y})
     end
 
-    def question1(["<" | tail], visited, {x, y}) do
-        case Enum.member?(visited, [x - 1, y]) do
-            false ->
-                question1(tail, [[x - 1, y] | visited], { x - 1, y })
-            true ->
-                question1(tail, visited, { x - 1, y })
-        end
+    def question1(visited, ["<" | tail], {x, y}) do
+        add_new_coordinate(visited, x - 1, y)
+        |> question1(tail, {x - 1, y})
     end
 
-    def question1(["^" | tail], visited, {x, y}) do
-        case Enum.member?(visited, [x , y + 1]) do
-            false ->
-                question1(tail, [[x , y + 1] | visited], { x, y + 1 })
-            true ->
-                question1(tail, visited, { x , y + 1 })
-        end
+    def question1(visited, ["^" | tail], {x, y}) do
+        add_new_coordinate(visited, x, y + 1)
+        |> question1(tail, {x, y + 1})
     end
 
-    def question1(["v" | tail], visited, {x, y}) do
-        case Enum.member?(visited, [x , y - 1]) do
-            false ->
-                question1(tail, [[x , y - 1 ] | visited], { x , y - 1 })
-            true ->
-                question1(tail, visited, { x , y - 1 })
-        end
+    def question1(visited, ["v" | tail], {x, y}) do
+        add_new_coordinate(visited, x, y - 1)
+        |> question1(tail, {x, y - 1})
     end
 
-    def question1([], visitied, {_x, _y}) do
-        Enum.count(visitied)
+    def question1(visited, [], {_x, _y}) do
+        Enum.count(visited)
     end
 
     def answer1 do
         input = Day3.input
-        question1(input, [[0,0]], {0,0})
+        question1([{0,0}], input, {0,0})
     end
 
     def add_new_coordinate(visited, x, y) do
-        case Enum.member?(visited, [x, y]) do
+        case Enum.member?(visited, {x, y}) do
             false ->
-                [[x,y] | visited]
+                [{x,y} | visited]
             true ->
                 visited
         end
@@ -109,7 +93,7 @@ defmodule Day3 do
 
     def answer2 do
         input = Day3.input
-        question2([[0,0]], input, @santa, {0,0}, {0,0})
+        question2([{0,0}], input, @santa, {0,0}, {0,0})
     end
 
 end
