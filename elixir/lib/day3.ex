@@ -5,7 +5,7 @@ defmodule Day3 do
 
     def input do
         alias Input
-        Input.main("../input/day3.txt")
+        Input.main("../../input/day3.txt")
         |> String.split("", trim: true)
     end
 
